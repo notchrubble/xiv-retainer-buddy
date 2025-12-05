@@ -1,0 +1,17 @@
+# build output
+.next
+dist
+build
+
+# test coverage
+coverage
+
+# dependencies
+node_modules
+
+# env and logs
+.env
+*.log
+
+# optional: lockfile (some people format JSON, some ignore it)
+pnpm-lock.yaml
