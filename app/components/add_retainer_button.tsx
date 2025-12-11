@@ -88,7 +88,7 @@ export default function AddRetainerButton() {
                     <ChevronsUpDown className="opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
+                <PopoverContent className="p-0">
                   <Command>
                     <CommandInput placeholder="Search job..." className="h-9" />
                     <CommandList>
@@ -123,15 +123,19 @@ export default function AddRetainerButton() {
               </Popover>
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Item Level</Label>
+              <Label htmlFor="level-1">Level</Label>
+              <Input type="number" id="level-1" name="level" />
+            </div>
+            <div className="grid gap-3">
+              <Label htmlFor="itemLevel-1">Item Level</Label>
               <Input type="number" id="itemlevel-1" name="itemlevel" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Gathering</Label>
+              <Label htmlFor="gathering-1">Gathering</Label>
               <Input type="number" id="gathering-1" name="gathering" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Perception</Label>
+              <Label htmlFor="perception-1">Perception</Label>
               <Input type="number" id="perception-1" name="perception" />
             </div>
           </div>
