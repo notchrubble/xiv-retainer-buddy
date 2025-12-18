@@ -99,7 +99,7 @@ export default function RetainerDialog() {
     const formData = new FormData(e.currentTarget);
     const newRetainer: Retainer = {
       name: formData.get("name") as string,
-      job: formData.get("job") as string,
+      job: value,
       level: Number(formData.get("level")),
       itemLevel: Number(formData.get("itemlevel")),
       gathering: Number(formData.get("gathering")),
@@ -107,6 +107,7 @@ export default function RetainerDialog() {
     };
     handleSave(newRetainer);
     e.currentTarget.reset();
+    setValue("");
     setOpen(false);
   };
 
@@ -179,7 +180,6 @@ export default function RetainerDialog() {
                   </Command>
                 </PopoverContent>
               </Popover>
-              <input type="hidden" name="job" value={value} />
             </div>
             <div className="grid gap-3">
               <Label htmlFor="level">Level</Label>
