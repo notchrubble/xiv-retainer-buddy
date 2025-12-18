@@ -1,5 +1,9 @@
 "use client";
 import * as React from "react";
+import { useCallback } from "react";
+import { Retainer } from "./retainer_container";
+
+const STORAGE_KEY = "retainers";
 
 const jobs = [
   { label: "Paladin", value: "pld" },
@@ -54,26 +58,80 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-export default function AddRetainerButton() {
+export default function RetainerDialog() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [retainers, setRetainers] = React.useState<Partial<Retainer>[]>([]);
+
+  // restore on mount
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Retainer[];
+        if (parsed.length > 0) {
+          setRetainers(parsed);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse retainers from localStorage", e);
+    }
+  }, []);
+
+  const handleChange = useCallback((patch: Partial<Retainer>) => {
+    setRetainers((prev) => ({ ...prev, ...patch }));
+  }, []);
+
+  const handleSave = (newRetainer: Retainer) => {
+    setRetainers((prev) => {
+      const next = [...prev, newRetainer];
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch (e) {
+        console.error("Failed to save retainers to localStorage", e);
+      }
+      return next;
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newRetainer: Retainer = {
+      name: formData.get("name") as string,
+      job: formData.get("job") as string,
+      level: Number(formData.get("level")),
+      itemLevel: Number(formData.get("itemlevel")),
+      gathering: Number(formData.get("gathering")),
+      perception: Number(formData.get("perception")),
+    };
+    handleSave(newRetainer);
+    e.currentTarget.reset();
+    setOpen(false);
+  };
+
+  const handleDelete = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setRetainers([]);
+  };
+
   return (
     <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button variant="outline">Add Retainer</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add Retainer</DialogTitle>
-          </DialogHeader>
+      <DialogTrigger asChild>
+        <Button variant="outline">Add Retainer</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add Retainer</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
           <div className="grid gap-4">
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Retainer Name</Label>
-              <Input id="name-1" name="name" />
+              <Label htmlFor="name">Retainer Name</Label>
+              <Input id="name" name="name" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="job-1">Job</Label>
+              <Label htmlFor="job">Job</Label>
               <Popover open={open} onOpenChange={setOpen} modal={true}>
                 <PopoverTrigger asChild>
                   <Button
@@ -121,22 +179,23 @@ export default function AddRetainerButton() {
                   </Command>
                 </PopoverContent>
               </Popover>
+              <input type="hidden" name="job" value={value} />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="level-1">Level</Label>
-              <Input type="number" id="level-1" name="level" />
+              <Label htmlFor="level">Level</Label>
+              <Input type="number" id="level" name="level" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="itemLevel-1">Item Level</Label>
-              <Input type="number" id="itemlevel-1" name="itemlevel" />
+              <Label htmlFor="itemLevel">Item Level</Label>
+              <Input type="number" id="itemlevel" name="itemlevel" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="gathering-1">Gathering</Label>
-              <Input type="number" id="gathering-1" name="gathering" />
+              <Label htmlFor="gathering">Gathering</Label>
+              <Input type="number" id="gathering" name="gathering" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="perception-1">Perception</Label>
-              <Input type="number" id="perception-1" name="perception" />
+              <Label htmlFor="perception">Perception</Label>
+              <Input type="number" id="perception" name="perception" />
             </div>
           </div>
           <DialogFooter>
@@ -145,8 +204,8 @@ export default function AddRetainerButton() {
             </DialogClose>
             <Button type="submit">Save changes</Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }
