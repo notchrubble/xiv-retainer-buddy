@@ -1,5 +1,5 @@
-import AddRetainerButton from "./add_retainer_button";
 import RetainerCard from "./retainer_card";
+import RetainerDialog from "./retainer_dialog";
 
 export interface Retainer {
   name: string;
@@ -34,7 +34,7 @@ export default function RetainerContainer() {
     <div className="col-span-12 mb-4 min-h-screen rounded-2xl font-sans outline lg:col-span-4 lg:mb-0">
       <div className="flex items-start justify-between gap-2 p-6">
         <h1 className="font-bold text-gray-50">Retainers</h1>
-        <AddRetainerButton />
+        <RetainerDialog />
       </div>
       <div className="p-6">
         {retainers.map((retainer, index) => (
